@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -9,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -54,7 +57,7 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 	
-	public VisitedLocation getUserLocation(User user) {
+	public VisitedLocation getUserLocation(User user) throws Exception{
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
 			trackUserLocation(user);
@@ -83,10 +86,32 @@ public class TourGuideService {
 		return providers;
 	}
 	
-	public VisitedLocation trackUserLocation(User user) {
+	public VisitedLocation trackUserLocation(User user) throws Exception{
+		StopWatch watchAll = new StopWatch();
+		StopWatch watch1 = new StopWatch();
+		StopWatch watch2 = new StopWatch();
+		StopWatch watch3 = new StopWatch();
+		
+		watchAll.start();
+		
+		watch1.start();
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		watch1.stop();
+		
+		watch2.start();
 		user.addToVisitedLocations(visitedLocation);
+		watch2.stop();
+		
+		watch3.start();
 		rewardsService.calculateRewards(user);
+		watch3.stop();
+		
+		watchAll.stop();
+		//System.out.println("trackUserLocation : ALL:" + TimeUnit.MILLISECONDS.toMillis(watchAll.getTime()) + " milliseconds.");
+		//System.out.println("trackUserLocation : getUserLocation:" + TimeUnit.MILLISECONDS.toMillis(watch1.getTime()) + " milliseconds.");
+		//System.out.println("trackUserLocation : addToVisitedLocation:" + TimeUnit.MILLISECONDS.toMillis(watch2.getTime()) + " milliseconds.");
+		//System.out.println("trackUserLocation : calculateRewards:" + TimeUnit.MILLISECONDS.toMillis(watch3.getTime()) + " milliseconds.\n");
+		
 		return visitedLocation;
 	}
 

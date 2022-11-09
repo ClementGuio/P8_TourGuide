@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -20,9 +23,9 @@ import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 public class TestRewardsService {
-
+	
 	@Test
-	public void userGetRewards() {
+	public void userGetRewards() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
@@ -48,7 +51,7 @@ public class TestRewardsService {
 	
 	@Ignore // Needs fixed - can throw ConcurrentModificationException
 	@Test
-	public void nearAllAttractions() {
+	public void nearAllAttractions() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);

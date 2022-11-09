@@ -1,7 +1,13 @@
 package tourGuide.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -36,10 +42,13 @@ public class RewardsService {
 		proximityBuffer = defaultProximityBuffer;
 	}
 	
+	//NOTE : RewardServiceTest : 3.3s
 	public void calculateRewards(User user) {
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
-		List<Attraction> attractions = gpsUtil.getAttractions();
+		//StopWatch watch = new StopWatch();
 		
+		//watch.start();
+		List<VisitedLocation> userLocations = new ArrayList<VisitedLocation>(user.getVisitedLocations()); //NOTE : clonage pour éviter ConcurrentModificationException
+		List<Attraction> attractions = new ArrayList<Attraction>(gpsUtil.getAttractions());
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
@@ -49,6 +58,8 @@ public class RewardsService {
 				}
 			}
 		}
+		//watch.stop();
+		//System.out.println("calculateRewards : Time Elapsed: " + TimeUnit.MILLISECONDS.toMillis(watch.getTime()) + " milliseconds.");
 	}
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -20,9 +22,9 @@ import tourGuide.user.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
-
+	
 	@Test
-	public void getUserLocation() {
+	public void getUserLocation() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
@@ -78,7 +80,7 @@ public class TestTourGuideService {
 	}
 	
 	@Test
-	public void trackUser() {
+	public void trackUser() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
@@ -94,7 +96,7 @@ public class TestTourGuideService {
 	
 	@Ignore // Not yet implemented
 	@Test
-	public void getNearbyAttractions() {
+	public void getNearbyAttractions() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		InternalTestHelper.setInternalUserNumber(0);
