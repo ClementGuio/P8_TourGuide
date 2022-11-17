@@ -16,66 +16,49 @@ import tourGuide.user.User;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
-	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(1);//5
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);//5 //NOTE: Constant?
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor(); //TODO :  why?
 	private final TourGuideService tourGuideService;
 	private boolean stop = false;
 	
-	//TODO : Ajouter log4j
-	
 	public Tracker(TourGuideService tourGuideService) {
-		System.out.println("Tracker constructor");
+		logger.info("Tracker constructor");
 		this.tourGuideService = tourGuideService;
 		
 		executorService.submit(this);
 	}
-	
+	 
 	/**
 	 * Assures to shut down the Tracker thread
 	 */
 	public void stopTracking() {
-		System.out.println("stopTracking");
+		logger.info("stopTracking");
 		stop = true;
 		executorService.shutdownNow();
 	}
 	
 	@Override
 	public void run(){
-		System.out.println("Locale : "+Locale.getDefault());
+		logger.info("Tracker Run()");
 		Locale.setDefault(Locale.ENGLISH); //NOTE : Solution à l'erreur généré par GpsUtil.getUserLocation()
-		System.out.println("Locale : "+Locale.getDefault());
 		
-		int nbProcs = Runtime.getRuntime().availableProcessors();
-		System.out.println("nbProcs : "+nbProcs);
-		
-		//ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(64);
-
 		StopWatch stopWatch = new StopWatch();
 		while(true) {
 			if(Thread.currentThread().isInterrupted() || stop) {
 				logger.debug("Tracker stopping");
 				break;
 			}
-			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(64);
+			ExecutorService executor = Executors.newFixedThreadPool(64);
 
 			List<User> users = tourGuideService.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			users.forEach(u -> {
-				try {
-					executor.submit(() -> tourGuideService.trackUserLocation(u));
-					//tourGuideService.trackUserLocation(u);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			});
+			users.forEach(u -> executor.submit(() -> tourGuideService.trackUserLocation(u)));
 			executor.shutdown();
 			
 			try {
 				executor.awaitTermination(20, TimeUnit.MINUTES);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			stopWatch.stop();

@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -23,7 +25,7 @@ import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 public class TestRewardsService {
-	
+	@Ignore
 	@Test
 	public void userGetRewards() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -40,7 +42,7 @@ public class TestRewardsService {
 		tourGuideService.tracker.stopTracking();
 		assertTrue(userRewards.size() == 1);
 	}
-	
+	@Ignore
 	@Test
 	public void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -49,7 +51,7 @@ public class TestRewardsService {
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 	
-	@Ignore // Needs fixed - can throw ConcurrentModificationException
+	//@Ignore // Needs fixed - can throw ConcurrentModificationException
 	@Test
 	public void nearAllAttractions() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -58,10 +60,14 @@ public class TestRewardsService {
 
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
+		//System.out.println("attractions size : "+tourGuideService.getAllUsers().get(0).getVisitedLocations().size());
+		StopWatch watch = new StopWatch();
+		watch.start();
 		rewardsService.calculateRewards(tourGuideService.getAllUsers().get(0));
 		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
 		tourGuideService.tracker.stopTracking();
+		watch.stop();
+		System.out.println("TEST nearAllAttractions : Time elapsed : "+TimeUnit.MILLISECONDS.toSeconds(watch.getTime()) + " seconds.");
 
 		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
 	}

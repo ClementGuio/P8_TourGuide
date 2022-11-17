@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +37,13 @@ public class TourGuideService {
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
-	public final Tracker tracker;
-	boolean testMode = true;
+	public final Tracker tracker; //NOTE : bof ?
+	boolean testMode = true; //NOTE : bof ?
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		//NOTE : Why here?
 		
 		if(testMode) {
 			logger.info("TestMode enabled");
@@ -51,12 +53,13 @@ public class TourGuideService {
 		}
 		tracker = new Tracker(this);
 		addShutDownHook();
+		
 	}
-	
+	//NOTE: c'est un peu con
 	public List<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
-	
+	 
 	public VisitedLocation getUserLocation(User user) throws Exception{
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
@@ -86,46 +89,22 @@ public class TourGuideService {
 		return providers;
 	}
 	
-	public VisitedLocation trackUserLocation(User user) throws Exception{
-		StopWatch watchAll = new StopWatch();
-		StopWatch watch1 = new StopWatch();
-		StopWatch watch2 = new StopWatch();
-		StopWatch watch3 = new StopWatch();
-		
-		watchAll.start();
-		
-		watch1.start();
+	public VisitedLocation trackUserLocation(User user){
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		watch1.stop();
-		
-		watch2.start();
 		user.addToVisitedLocations(visitedLocation);
-		watch2.stop();
-		
-		watch3.start();
 		rewardsService.calculateRewards(user);
-		watch3.stop();
-		
-		watchAll.stop();
-		//System.out.println("trackUserLocation : ALL:" + TimeUnit.MILLISECONDS.toMillis(watchAll.getTime()) + " milliseconds.");
-		//System.out.println("trackUserLocation : getUserLocation:" + TimeUnit.MILLISECONDS.toMillis(watch1.getTime()) + " milliseconds.");
-		//System.out.println("trackUserLocation : addToVisitedLocation:" + TimeUnit.MILLISECONDS.toMillis(watch2.getTime()) + " milliseconds.");
-		//System.out.println("trackUserLocation : calculateRewards:" + TimeUnit.MILLISECONDS.toMillis(watch3.getTime()) + " milliseconds.\n");
-		
+	
 		return visitedLocation;
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
-		}
+		List<Attraction> nearbyAttractions = new ArrayList<>(gpsUtil.getAttractions());
+		nearbyAttractions.sort(Comparator.comparing(a -> 
+							rewardsService.getDistance(visitedLocation.location,new Location(((Attraction)a).latitude,((Attraction)a).longitude))));
 		
-		return nearbyAttractions;
+		return nearbyAttractions.subList(0, 5);
 	}
-	
+	//NOTE : Why here?
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {
@@ -139,10 +118,11 @@ public class TourGuideService {
 	 * Methods Below: For Internal Testing
 	 * 
 	 **********************************************************************************/
+	
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 	private final Map<String, User> internalUserMap = new HashMap<>();
-	private void initializeInternalUsers() {
+	public void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";

@@ -1,7 +1,13 @@
 package tourGuide;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +23,8 @@ import tripPricer.Provider;
 @RestController
 public class TourGuideController {
 
+	Logger logger = LoggerFactory.getLogger(TourGuideController.class);
+	
 	@Autowired
 	TourGuideService tourGuideService;
 	
@@ -43,6 +51,7 @@ public class TourGuideController {
     @RequestMapping("/getNearbyAttractions") 
     public String getNearbyAttractions(@RequestParam String userName) throws Exception{
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+    	logger.debug("userLocation : "+visitedLocation.location.latitude+" , "+visitedLocation.location.longitude);
     	return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
     }
     
@@ -62,8 +71,22 @@ public class TourGuideController {
     	//        "019b04a9-067a-4c76-8817-ee75088c3822": {"longitude":-48.188821,"latitude":74.84371} 
     	//        ...
     	//     }
-    	
-    	return JsonStream.serialize("");
+    	List<User> allUsers = tourGuideService.getAllUsers();
+    	List<HashMap<String,Double>> currentLocation;
+    	HashMap<String,Double> latitude;
+    	HashMap<String,Double> longitude;
+    	Map<String,List<HashMap<String,Double>>> mapCurrentLocations = new HashMap<String,List<HashMap<String,Double>>>();
+    	for (User user : allUsers) {
+    		currentLocation = new ArrayList<HashMap<String,Double>>();
+    		latitude = new HashMap<String,Double>();
+    		longitude = new HashMap<String,Double>();
+    		latitude.put("latitude", user.getLastVisitedLocation().location.latitude);
+    		longitude.put("longitude", user.getLastVisitedLocation().location.longitude);
+    		currentLocation.add(longitude);
+    		currentLocation.add(latitude);
+    		mapCurrentLocations.put(user.getUserId().toString(), currentLocation);
+    	}
+    	return JsonStream.serialize(mapCurrentLocations);
     }
     
     @RequestMapping("/getTripDeals")

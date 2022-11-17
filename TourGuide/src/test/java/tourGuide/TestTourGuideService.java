@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
@@ -94,7 +95,7 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 	
-	@Ignore // Not yet implemented
+	//@Ignore // Not yet implemented - OK
 	@Test
 	public void getNearbyAttractions() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -108,10 +109,19 @@ public class TestTourGuideService {
 		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
 		tourGuideService.tracker.stopTracking();
-		
+		Location loc0 = new Location(attractions.get(0).latitude,attractions.get(0).longitude);
+		Location loc1 = new Location(attractions.get(1).latitude,attractions.get(1).longitude);
+		Location loc2 = new Location(attractions.get(2).latitude,attractions.get(2).longitude);
+		Location loc3 = new Location(attractions.get(3).latitude,attractions.get(3).longitude);
+		Location loc4 = new Location(attractions.get(4).latitude,attractions.get(4).longitude);
+		assertTrue(rewardsService.getDistance(visitedLocation.location, loc0) <= rewardsService.getDistance(visitedLocation.location, loc1));
+		assertTrue(rewardsService.getDistance(visitedLocation.location, loc1) <= rewardsService.getDistance(visitedLocation.location, loc2));
+		assertTrue(rewardsService.getDistance(visitedLocation.location, loc2) <= rewardsService.getDistance(visitedLocation.location, loc3));
+		assertTrue(rewardsService.getDistance(visitedLocation.location, loc3) <= rewardsService.getDistance(visitedLocation.location, loc4));
 		assertEquals(5, attractions.size());
 	}
 	
+	@Test
 	public void getTripDeals() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
@@ -124,7 +134,7 @@ public class TestTourGuideService {
 		
 		tourGuideService.tracker.stopTracking();
 		
-		assertEquals(10, providers.size());
+		assertEquals(5, providers.size()); //NOTE: valeur originelle 10
 	}
 	
 	

@@ -20,7 +20,7 @@ import tourGuide.user.UserReward;
 
 @Service
 public class RewardsService {
-    private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+    private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;//TODO : Constant
 
 	// proximity in miles
     private int defaultProximityBuffer = 10;
@@ -42,24 +42,25 @@ public class RewardsService {
 		proximityBuffer = defaultProximityBuffer;
 	}
 	
-	//NOTE : RewardServiceTest : 3.3s
 	public void calculateRewards(User user) {
-		//StopWatch watch = new StopWatch();
-		
-		//watch.start();
 		List<VisitedLocation> userLocations = new ArrayList<VisitedLocation>(user.getVisitedLocations()); //NOTE : clonage pour éviter ConcurrentModificationException
+		//System.out.println("locations size : "+userLocations.size());
 		List<Attraction> attractions = new ArrayList<Attraction>(gpsUtil.getAttractions());
+		//System.out.println("attractions size : "+attractions.size());
 		for(VisitedLocation visitedLocation : userLocations) {
+			//System.out.println("location : "+visitedLocation.location);
 			for(Attraction attraction : attractions) {
+				//System.out.println("\tattraction : "+attraction.attractionName);
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
+					//System.out.println("\tok1");
 					if(nearAttraction(visitedLocation, attraction)) {
+						//System.out.println("\tok2");
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+						//System.out.println("size : "+user.getUserRewards().size());
 					}
 				}
 			}
 		}
-		//watch.stop();
-		//System.out.println("calculateRewards : Time Elapsed: " + TimeUnit.MILLISECONDS.toMillis(watch.getTime()) + " milliseconds.");
 	}
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
