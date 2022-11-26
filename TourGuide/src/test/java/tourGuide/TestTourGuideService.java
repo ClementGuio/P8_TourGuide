@@ -10,19 +10,29 @@ import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.dao.UserDAOForTesting;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
 
+
 public class TestTourGuideService {
+	
+	UserDAOForTesting userDAO = new UserDAOForTesting();
+	
+	@BeforeClass
+	public static void setup() {
+		Locale.setDefault(Locale.ENGLISH);
+	}
 	
 	@Test
 	public void getUserLocation() throws Exception{
@@ -33,10 +43,11 @@ public class TestTourGuideService {
 		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
-		tourGuideService.tracker.stopTracking();
+		
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 	}
 	
+	//TODO : déplacer dans UserServiceTest
 	@Test
 	public void addUser() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -47,18 +58,19 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 
-		tourGuideService.addUser(user);
-		tourGuideService.addUser(user2);
+		userDAO.addUser(user);
+		userDAO.addUser(user2);
 		
-		User retrivedUser = tourGuideService.getUser(user.getUserName());
-		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
+		User retrivedUser = userDAO.getUser(user.getUserName());
+		User retrivedUser2 = userDAO.getUser(user2.getUserName());
 
-		tourGuideService.tracker.stopTracking();
+		//tourGuideService.tracker.stopTracking();
 		
 		assertEquals(user, retrivedUser);
 		assertEquals(user2, retrivedUser2);
 	}
 	
+	//TODO : déplacer dans UserServiceTest
 	@Test
 	public void getAllUsers() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -69,12 +81,12 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 
-		tourGuideService.addUser(user);
-		tourGuideService.addUser(user2);
+		userDAO.addUser(user);
+		userDAO.addUser(user2);
 		
-		List<User> allUsers = tourGuideService.getAllUsers();
+		List<User> allUsers = userDAO.getAllUsers();
 
-		tourGuideService.tracker.stopTracking();
+		//tourGuideService.tracker.stopTracking();
 		
 		assertTrue(allUsers.contains(user));
 		assertTrue(allUsers.contains(user2));
@@ -90,7 +102,7 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
-		tourGuideService.tracker.stopTracking();
+		//tourGuideService.tracker.stopTracking();
 		
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
@@ -108,7 +120,7 @@ public class TestTourGuideService {
 		
 		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 		
-		tourGuideService.tracker.stopTracking();
+		//tourGuideService.tracker.stopTracking();
 		Location loc0 = new Location(attractions.get(0).latitude,attractions.get(0).longitude);
 		Location loc1 = new Location(attractions.get(1).latitude,attractions.get(1).longitude);
 		Location loc2 = new Location(attractions.get(2).latitude,attractions.get(2).longitude);
@@ -132,7 +144,7 @@ public class TestTourGuideService {
 
 		List<Provider> providers = tourGuideService.getTripDeals(user);
 		
-		tourGuideService.tracker.stopTracking();
+		//tourGuideService.tracker.stopTracking();
 		
 		assertEquals(5, providers.size()); //NOTE: valeur originelle 10
 	}

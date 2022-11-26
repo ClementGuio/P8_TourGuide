@@ -25,6 +25,5 @@ public class UserReward {
 	
 	public int getRewardPoints() {
 		return rewardPoints;
-	}
-	
+	}	
 }

@@ -13,11 +13,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.controller.ExecutionManager;
+import tourGuide.dao.IUserDAO;
+import tourGuide.dao.UserDAOForTesting;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -25,7 +29,18 @@ import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 public class TestRewardsService {
-	@Ignore
+	
+	@Autowired
+	ExecutionManager executionManager;
+	
+	UserDAOForTesting userDAO = new UserDAOForTesting();
+	
+	@BeforeClass
+	public static void setup() {
+		Locale.setDefault(Locale.ENGLISH);
+	}
+	
+	//@Ignore
 	@Test
 	public void userGetRewards() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -33,16 +48,14 @@ public class TestRewardsService {
 
 		InternalTestHelper.setInternalUserNumber(0);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-		tourGuideService.trackUserLocation(user);
+		tourGuideService.trackUserLocation(user); //*
 		List<UserReward> userRewards = user.getUserRewards();
-		tourGuideService.tracker.stopTracking();
 		assertTrue(userRewards.size() == 1);
 	}
-	@Ignore
+	//@Ignore
 	@Test
 	public void isWithinAttractionProximity() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -57,15 +70,13 @@ public class TestRewardsService {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
-
+		
 		InternalTestHelper.setInternalUserNumber(1);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		//System.out.println("attractions size : "+tourGuideService.getAllUsers().get(0).getVisitedLocations().size());
+		userDAO.initializeInternalUsers();
 		StopWatch watch = new StopWatch();
 		watch.start();
-		rewardsService.calculateRewards(tourGuideService.getAllUsers().get(0));
-		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
-		tourGuideService.tracker.stopTracking();
+		rewardsService.calculateRewards(userDAO.getAllUsers().get(0));
+		List<UserReward> userRewards = userDAO.getAllUsers().get(0).getUserRewards();
 		watch.stop();
 		System.out.println("TEST nearAllAttractions : Time elapsed : "+TimeUnit.MILLISECONDS.toSeconds(watch.getTime()) + " seconds.");
 

@@ -1,73 +1,67 @@
-package tourGuide;
+package tourGuide.dao;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.TourGuideService;
-import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
+import tourGuide.user.UserReward;
 
-@Component
-public class ExecutionManager implements CommandLineRunner{
-	Logger logger = LoggerFactory.getLogger(ExecutionManager.class);
+@Repository
+public class UserDAOForTesting implements IUserDAO {
 	
-	private boolean testMode = true;
-	public Tracker tracker;
+	Logger logger = LoggerFactory.getLogger(UserDAOForTesting.class);
 	
-	@Autowired
-	TourGuideService tourGuideService;
+	private final Map<String, User> internalUserMap = new HashMap<>();
+	
 	
 	@Override
-	public void run(String... args) throws Exception {
-		
-		if(args.length>0 && args[0].equals("Test")) {
-			//do nothing
-		}else {
-			if(testMode) {
-				logger.info("TestMode enabled");
-				logger.debug("Initializing users");
-				tourGuideService.initializeInternalUsers();
-				logger.debug("Finished initializing users");
-			}
-			tracker = new Tracker(tourGuideService);
-			addShutDownHook();
-		}
-		
+	public User getUser(String userName) {
+		return internalUserMap.get(userName);
 	}
 	
-	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-		        tracker.stopTracking();
-		      } 
-		    }); 
+	@Override
+	public List<User> getAllUsers() {
+		return internalUserMap.values().stream().collect(Collectors.toList());
 	}
-
+	
+	@Override
+	public void addUser(User user) {
+		logger.debug("addUser : "+user);
+		if(!internalUserMap.containsKey(user.getUserName())) {
+			internalUserMap.put(user.getUserName(), user);
+		}
+	}
+	
+	@Override
+	public void deleteUser(String userName) {
+		internalUserMap.remove(userName);
+	}
 	
 	/**********************************************************************************
 	 * 
 	 * Methods Below: For Internal Testing
 	 * 
 	 **********************************************************************************/
-	private static final String tripPricerApiKey = "test-server-api-key";
+	
+	
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
-	private void initializeInternalUsers() {
+	
+	public void initializeInternalUsers() {
 		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
 			String userName = "internalUser" + i;
 			String phone = "000";

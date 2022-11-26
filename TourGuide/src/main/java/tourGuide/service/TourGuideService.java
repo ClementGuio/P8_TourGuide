@@ -37,14 +37,15 @@ public class TourGuideService {
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
-	public final Tracker tracker; //NOTE : bof ?
-	boolean testMode = true; //NOTE : bof ?
+	private static final String tripPricerApiKey = "test-server-api-key";
+	//public final Tracker tracker; //NOTE : bof ?
+	//boolean testMode = true; //NOTE : bof ?
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
 		//NOTE : Why here?
-		
+		/*
 		if(testMode) {
 			logger.info("TestMode enabled");
 			logger.debug("Initializing users");
@@ -53,34 +54,18 @@ public class TourGuideService {
 		}
 		tracker = new Tracker(this);
 		addShutDownHook();
-		
+		*/
 	}
-	//NOTE: c'est un peu con
-	public List<UserReward> getUserRewards(User user) {
-		return user.getUserRewards();
-	}
-	 
-	public VisitedLocation getUserLocation(User user) throws Exception{
+	
+	//OK 
+	public VisitedLocation getUserLocation(User user){
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
 			trackUserLocation(user);
 		return visitedLocation;
 	}
 	
-	public User getUser(String userName) {
-		return internalUserMap.get(userName);
-	}
-	
-	public List<User> getAllUsers() {
-		return internalUserMap.values().stream().collect(Collectors.toList());
-	}
-	
-	public void addUser(User user) {
-		if(!internalUserMap.containsKey(user.getUserName())) {
-			internalUserMap.put(user.getUserName(), user);
-		}
-	}
-	
+	//OK
 	public List<Provider> getTripDeals(User user) {
 		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
@@ -88,7 +73,7 @@ public class TourGuideService {
 		user.setTripDeals(providers);
 		return providers;
 	}
-	
+	//OK
 	public VisitedLocation trackUserLocation(User user){
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
@@ -96,7 +81,7 @@ public class TourGuideService {
 	
 		return visitedLocation;
 	}
-
+	//OK
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>(gpsUtil.getAttractions());
 		nearbyAttractions.sort(Comparator.comparing(a -> 
@@ -104,7 +89,8 @@ public class TourGuideService {
 		
 		return nearbyAttractions.subList(0, 5);
 	}
-	//NOTE : Why here?
+	//NOTE : exectutionManager
+	/*
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {
@@ -112,13 +98,41 @@ public class TourGuideService {
 		      } 
 		    }); 
 	}
+	*/
 	
+	//TODO : supprimer (remplacer par appel au domaine
+		/*
+		public List<UserReward> getUserRewards(User user) {
+			return user.getUserRewards();
+		}
+		*/
+	
+	//NOTE:Creer repo OK
+		/*
+		public User getUser(String userName) {
+			return internalUserMap.get(userName);
+		}
+		*/
+		//NOTE:Creer repo OK
+		/*
+		public List<User> getAllUsers() {
+			return internalUserMap.values().stream().collect(Collectors.toList());
+		}
+		*/
+		//NOTE:Creer repo OK
+		/*
+		public void addUser(User user) {
+			if(!internalUserMap.containsKey(user.getUserName())) {
+				internalUserMap.put(user.getUserName(), user);
+			}
+		}
+		*/
 	/**********************************************************************************
 	 * 
 	 * Methods Below: For Internal Testing
 	 * 
 	 **********************************************************************************/
-	
+	/*
 	private static final String tripPricerApiKey = "test-server-api-key";
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 	private final Map<String, User> internalUserMap = new HashMap<>();
@@ -157,5 +171,5 @@ public class TourGuideService {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-	
+	*/
 }

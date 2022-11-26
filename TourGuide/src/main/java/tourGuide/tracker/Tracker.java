@@ -10,7 +10,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import tourGuide.dao.IUserDAO;
+import tourGuide.dao.UserDAOForTesting;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
@@ -21,10 +24,13 @@ public class Tracker extends Thread {
 	private final TourGuideService tourGuideService;
 	private boolean stop = false;
 	
-	public Tracker(TourGuideService tourGuideService) {
+	//@Autowired
+	private IUserDAO userDAO;
+	
+	public Tracker(TourGuideService tourGuideService, IUserDAO userDAO) {
 		logger.info("Tracker constructor");
 		this.tourGuideService = tourGuideService;
-		
+		this.userDAO = (UserDAOForTesting) userDAO;
 		executorService.submit(this);
 	}
 	 
@@ -48,12 +54,12 @@ public class Tracker extends Thread {
 				logger.debug("Tracker stopping");
 				break;
 			}
-			ExecutorService executor = Executors.newFixedThreadPool(64);
+			ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(64);
 
-			List<User> users = tourGuideService.getAllUsers();
+			List<User> users = userDAO.getAllUsers();
 			logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
 			stopWatch.start();
-			users.forEach(u -> executor.submit(() -> tourGuideService.trackUserLocation(u)));
+			users.forEach(u -> executor.execute(() -> tourGuideService.trackUserLocation(u)));
 			executor.shutdown();
 			
 			try {
