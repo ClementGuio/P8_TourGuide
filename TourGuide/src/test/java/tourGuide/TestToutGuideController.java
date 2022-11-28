@@ -2,13 +2,16 @@ package tourGuide;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -85,18 +88,20 @@ public class TestToutGuideController {
 						.andExpect(MockMvcResultMatchers.status().isOk())
 						.andExpect(MockMvcResultMatchers.content().json("{\"longitude\":"+ userLocation.longitude+",\"latitude\":"+userLocation.latitude+"}"));
 	}
-	//TODO : améliorer
+	
 	@Test
 	public void testGetNearbyAttractions() throws Exception {
 		User user = userDAO.getAllUsers().get(0);
-		//VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
-		//List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
-		//RewardCentral rewardCentral = new RewardCentral();
+		VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
+		List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+		RewardCentral rewardCentral = new RewardCentral();
 		mvc.perform(MockMvcRequestBuilders
 						.get("/getNearbyAttractions?userName="+user.getUserName())
 						.accept(MediaType.APPLICATION_JSON))
-						.andExpect(MockMvcResultMatchers.status().isOk());
-						
+						.andExpect(MockMvcResultMatchers.status().isOk())
+						.andExpect(jsonPath("$[*]['Attraction name']",
+								Matchers.containsInAnyOrder(attractions.get(0).attractionName,attractions.get(1).attractionName,
+										attractions.get(2).attractionName,attractions.get(3).attractionName,attractions.get(4).attractionName)));
 	}
 	
 	@Test
@@ -108,7 +113,7 @@ public class TestToutGuideController {
 					.accept(MediaType.APPLICATION_JSON))
 					.andExpect(MockMvcResultMatchers.status().isOk());
 	}
-	//TODO : améliorer
+
 	@Test
 	public void testGetAllCurrentLocations() throws Exception {
 		List<User> users = userDAO.getAllUsers();
@@ -116,8 +121,8 @@ public class TestToutGuideController {
 		mvc.perform(MockMvcRequestBuilders
 					.get("/getAllCurrentLocations")
 					.accept(MediaType.APPLICATION_JSON))
-					.andExpect(MockMvcResultMatchers.status().isOk());
-					
+					.andExpect(MockMvcResultMatchers.status().isOk())
+					.andExpect(jsonPath("$[*]['latitude']",Matchers.containsInAnyOrder(users.get(0).getLastVisitedLocation().location.latitude,users.get(1).getLastVisitedLocation().location.latitude)));
 	}
 	
 	@Test

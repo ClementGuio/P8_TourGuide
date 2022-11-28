@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
-import tourGuide.dao.UserDAOForTesting;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.UserService;
@@ -54,7 +51,7 @@ public class TourGuideController {
 		return JsonStream.serialize(visitedLocation.location);
     }
     
-    //  TODO: Change this method to no longer return a List of Attractions.
+    //  OK - Change this method to no longer return a List of Attractions.
  	//  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
  	//  Return a new JSON object that contains:
     	// Name of Tourist attraction, 
@@ -72,8 +69,6 @@ public class TourGuideController {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
     	logger.debug("userLocation : "+visitedLocation.location.latitude+" , "+visitedLocation.location.longitude);
     	List<Attraction> nearAttractions = tourGuideService.getNearByAttractions(visitedLocation);
-    	//VisitedLocation userLocation = user.getLastVisitedLocation();
-		//String userCoord = Double.toString(visitedLocation.location.latitude)+" , "+Double.toString(visitedLocation.location.longitude);
     	Map<String,Double> userCoord = new LinkedHashMap<String,Double>();
     	userCoord.put("latitude", visitedLocation.location.latitude);
     	userCoord.put("longitude", visitedLocation.location.longitude);
@@ -108,7 +103,7 @@ public class TourGuideController {
     
     @RequestMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
-    	// TODO: Get a list of every user's most recent location as JSON
+    	// OK - Get a list of every user's most recent location as JSON
     	//- Note: does not use gpsUtil to query for their current location, 
     	//        but rather gathers the user's current location from their stored location history.
     	//

@@ -28,20 +28,4 @@ public class TourGuideModule {
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
 	}
-	/*
-	@Bean
-	public UserDAOForTesting getUserDAO() {
-		return new UserDAOForTesting();
-	}
-	
-	@Bean
-	public TourGuideService getTourGuideService() {
-		return new TourGuideService(getGpsUtil(),getRewardsService());
-	}
-	
-	@Bean
-	public UserService getUserService() {
-		return new UserService(getUserDAO());
-	}
-	*/
 }

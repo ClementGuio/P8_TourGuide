@@ -1,29 +1,17 @@
 package tourGuide.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import java.util.stream.IntStream;
-
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import tourGuide.dao.IUserDAO;
 import tourGuide.dao.UserDAOForTesting;
-import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.UserService;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
 
 @Component
 public class ExecutionManager implements CommandLineRunner{
@@ -43,7 +31,7 @@ public class ExecutionManager implements CommandLineRunner{
 	
 	@Override
 	public void run(String... args) throws Exception {
-		logger.info("run : args("+args.length+")");
+		Locale.setDefault(Locale.ENGLISH); 
 		if(testMode) {
 			logger.info("TestMode enabled");
 			

@@ -37,7 +37,6 @@ public class TestUserService {
 		assertEquals(user, retrivedUser);
 	}
 	
-	//TODO : déplacer dans UserServiceTest
 	@Test
 	public void getAllUsers() {
 		

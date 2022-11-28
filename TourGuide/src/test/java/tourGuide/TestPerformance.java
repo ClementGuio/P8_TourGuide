@@ -58,14 +58,13 @@ public class TestPerformance {
 	
 	UserDAOForTesting userDAO = new UserDAOForTesting();
 	
-	private final int NBUSERS = 10;
-	
+	private final int NBUSERS = 100000;	
 	@BeforeClass
 	public static void setup() {
 		Locale.setDefault(Locale.ENGLISH);
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void highVolumeTrackLocation_WithoutOptimization() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -117,7 +116,7 @@ public class TestPerformance {
 	}
 	
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void highVolumeGetRewards_withoutOptimization() {
 		GpsUtil gpsUtil = new GpsUtil();
@@ -148,7 +147,7 @@ public class TestPerformance {
 	
 	//@Ignore
 	@Test
-	public void highVolumeGetRewards() throws Exception{  // 100000 users : 802s
+	public void highVolumeGetRewards() throws Exception{  // 100000 users : ~ 800 secondes
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 		

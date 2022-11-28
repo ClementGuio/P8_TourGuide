@@ -19,8 +19,8 @@ import tourGuide.user.User;
 
 public class Tracker extends Thread {
 	private Logger logger = LoggerFactory.getLogger(Tracker.class);
-	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);//5 //NOTE: Constant?
-	private final ExecutorService executorService = Executors.newSingleThreadExecutor(); //TODO :  why?
+	private static final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
+	private final ExecutorService executorService = Executors.newSingleThreadExecutor(); 
 	private final TourGuideService tourGuideService;
 	private boolean stop = false;
 	
@@ -46,7 +46,6 @@ public class Tracker extends Thread {
 	@Override
 	public void run(){
 		logger.info("Tracker Run()");
-		Locale.setDefault(Locale.ENGLISH); //NOTE : Solution à l'erreur généré par GpsUtil.getUserLocation()
 		
 		StopWatch stopWatch = new StopWatch();
 		while(true) {

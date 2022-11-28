@@ -47,51 +47,6 @@ public class TestTourGuideService {
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 	}
 	
-	//TODO : déplacer dans UserServiceTest
-	@Test
-	public void addUser() {
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-		userDAO.addUser(user);
-		userDAO.addUser(user2);
-		
-		User retrivedUser = userDAO.getUser(user.getUserName());
-		User retrivedUser2 = userDAO.getUser(user2.getUserName());
-
-		//tourGuideService.tracker.stopTracking();
-		
-		assertEquals(user, retrivedUser);
-		assertEquals(user2, retrivedUser2);
-	}
-	
-	//TODO : déplacer dans UserServiceTest
-	@Test
-	public void getAllUsers() {
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-		
-		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
-
-		userDAO.addUser(user);
-		userDAO.addUser(user2);
-		
-		List<User> allUsers = userDAO.getAllUsers();
-
-		//tourGuideService.tracker.stopTracking();
-		
-		assertTrue(allUsers.contains(user));
-		assertTrue(allUsers.contains(user2));
-	}
-	
 	@Test
 	public void trackUser() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -107,7 +62,6 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 	
-	//@Ignore // Not yet implemented - OK
 	@Test
 	public void getNearbyAttractions() throws Exception{
 		GpsUtil gpsUtil = new GpsUtil();
@@ -146,7 +100,7 @@ public class TestTourGuideService {
 		
 		//tourGuideService.tracker.stopTracking();
 		
-		assertEquals(5, providers.size()); //NOTE: valeur originelle 10
+		assertEquals(5, providers.size());
 	}
 	
 	
