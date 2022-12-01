@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="tourGuide.TestPerformance" tests="4" skipped="2" failures="0" errors="0" timestamp="2022-12-01T07:13:49" hostname="eletelekeli-ThinkPad-L450" time="1.604">
+  <properties/>
+  <testcase name="highVolumeTrackLocation_WithoutOptimization" classname="tourGuide.TestPerformance" time="0.0">
+    <skipped/>
+  </testcase>
+  <testcase name="highVolumeTrackLocation" classname="tourGuide.TestPerformance" time="0.218"/>
+  <testcase name="highVolumeGetRewards" classname="tourGuide.TestPerformance" time="1.385"/>
+  <testcase name="highVolumeGetRewards_withoutOptimization" classname="tourGuide.TestPerformance" time="0.0">
+    <skipped/>
+  </testcase>
+  <system-out><![CDATA[2022-12-01 08:13:49.214 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : Created 100 internal test users.
+nb Users : 100
+Queue size : 36
+Queue size : 0
+TEST highVolumeTrackLocation: Time Elapsed: 0 seconds.
+2022-12-01 08:13:49.430 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : Created 100 internal test users.
+TEST highVolumeGetRewards: Time Elapsed: 1 seconds.
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
