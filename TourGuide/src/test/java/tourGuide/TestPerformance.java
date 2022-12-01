@@ -58,7 +58,7 @@ public class TestPerformance {
 	
 	UserDAOForTesting userDAO = new UserDAOForTesting();
 	
-	private final int NBUSERS = 100000;	
+	private final int NBUSERS = 100;	
 	@BeforeClass
 	public static void setup() {
 		Locale.setDefault(Locale.ENGLISH);
