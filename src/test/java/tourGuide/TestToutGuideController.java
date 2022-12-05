@@ -135,4 +135,16 @@ public class TestToutGuideController {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
+	@Test
+	public void testUpdatePreferences() throws Exception {
+		User user = userDAO.getAllUsers().get(0);
+		
+		mvc.perform(MockMvcRequestBuilders
+				.get("/updatePreferences?userName="+user.getUserName()+"&currency=USD&attractionProximity=3&lowerPricePoint=10&"
+						+ "highPricePoint=1000&tripDuration=2&ticketQuantity=5&numberOfAdults=2&numberOfChildren=3"))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+		
+		assertTrue(user.getUserPreferences().getTicketQuantity()==5);
+	}
+	
 }

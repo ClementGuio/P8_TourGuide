@@ -28,6 +28,14 @@ public class UserPreferences {
 		return attractionProximity;
 	}
 	
+	public CurrencyUnit getCurrency() {
+		return currency;
+	}
+	
+	public void setCurrency(CurrencyUnit currency) {
+		this.currency = currency;
+	}
+	
 	public Money getLowerPricePoint() {
 		return lowerPricePoint;
 	}

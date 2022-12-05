@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tourGuide.TestTourGuideService" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-12-01T07:13:48" hostname="eletelekeli-ThinkPad-L450" time="0.274">
+<testsuite name="tourGuide.TestTourGuideService" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-12-01T07:37:57" hostname="eletelekeli-ThinkPad-L450" time="0.197">
   <properties/>
-  <testcase name="getUserLocation" classname="tourGuide.TestTourGuideService" time="0.063"/>
-  <testcase name="getTripDeals" classname="tourGuide.TestTourGuideService" time="0.047"/>
-  <testcase name="trackUser" classname="tourGuide.TestTourGuideService" time="0.066"/>
-  <testcase name="getNearbyAttractions" classname="tourGuide.TestTourGuideService" time="0.097"/>
+  <testcase name="getUserLocation" classname="tourGuide.TestTourGuideService" time="0.05"/>
+  <testcase name="getTripDeals" classname="tourGuide.TestTourGuideService" time="0.002"/>
+  <testcase name="trackUser" classname="tourGuide.TestTourGuideService" time="0.082"/>
+  <testcase name="getNearbyAttractions" classname="tourGuide.TestTourGuideService" time="0.062"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

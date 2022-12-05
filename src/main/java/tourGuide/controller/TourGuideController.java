@@ -5,12 +5,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+
+import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.jsoniter.output.JsonStream;
 
@@ -18,10 +24,12 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
+import tourGuide.exception.IllegalRequestException;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.UserService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tripPricer.Provider;
 
 @RestController
@@ -127,5 +135,30 @@ public class TourGuideController {
     public String getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(userService.getUser(userName));
     	return JsonStream.serialize(providers);
+    }
+    
+    @RequestMapping("/updatePreferences")
+    public void updatePreferences(@RequestParam String userName,@RequestParam int attractionProximity,@RequestParam CurrencyUnit currency,
+    								@RequestParam Double lowerPricePoint, @RequestParam Double highPricePoint, @RequestParam int tripDuration, 
+    								@RequestParam int ticketQuantity, @RequestParam int numberOfAdults, @RequestParam int numberOfChildren) 
+    								throws IllegalRequestException, MethodArgumentTypeMismatchException {
+    	
+    	User user = userService.getUser(userName);
+    	if (user == null) {
+    		throw new IllegalRequestException("This user does not exist.");
+    	}
+    	UserPreferences userPref = userService.getUser(userName).getUserPreferences();
+    	userPref.setAttractionProximity(attractionProximity);
+    	try {
+    		userPref.setCurrency(currency);
+    	}catch(MethodArgumentTypeMismatchException e){
+    		throw new IllegalRequestException("Currency is not recognized. Details :"+e.getMessage());
+    	}
+    	userPref.setLowerPricePoint(Money.of(lowerPricePoint, currency));
+    	userPref.setHighPricePoint(Money.of(highPricePoint, currency));
+    	userPref.setTripDuration(tripDuration);
+    	userPref.setTicketQuantity(ticketQuantity);
+    	userPref.setNumberOfAdults(numberOfAdults);
+    	userPref.setNumberOfChildren(numberOfChildren);
     }
 }

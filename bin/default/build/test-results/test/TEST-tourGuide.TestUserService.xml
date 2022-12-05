@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tourGuide.TestUserService" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-12-01T07:13:50" hostname="eletelekeli-ThinkPad-L450" time="0.004">
+<testsuite name="tourGuide.TestUserService" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-12-01T07:37:59" hostname="eletelekeli-ThinkPad-L450" time="0.005">
   <properties/>
-  <testcase name="getAllUsers" classname="tourGuide.TestUserService" time="0.001"/>
-  <testcase name="addAndGetUser" classname="tourGuide.TestUserService" time="0.0"/>
-  <testcase name="deleteUser" classname="tourGuide.TestUserService" time="0.001"/>
-  <system-out><![CDATA[2022-12-01 08:13:50.806 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : f248c6f3-e347-450f-97fb-a2049753668a ; userName : jon ; email : jon@tourGuide.com
-2022-12-01 08:13:50.806 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : f4ceabea-a61f-43a9-b777-eec24bcf7128 ; userName : jon2 ; email : jon2@tourGuide.com
-2022-12-01 08:13:50.807 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : a91b22b2-58eb-4abb-a2bc-855ad857af13 ; userName : jon ; email : jon@tourGuide.com
-2022-12-01 08:13:50.809 DEBUG 46024 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : e16dc449-9a7b-4012-8829-920eb21cd98b ; userName : jon ; email : jon@tourGuide.com
+  <testcase name="getAllUsers" classname="tourGuide.TestUserService" time="0.002"/>
+  <testcase name="addAndGetUser" classname="tourGuide.TestUserService" time="0.001"/>
+  <testcase name="deleteUser" classname="tourGuide.TestUserService" time="0.002"/>
+  <system-out><![CDATA[2022-12-01 08:37:59.554 DEBUG 47796 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : 662ac783-3155-4c70-9cd2-fbb40fddb98e ; userName : jon ; email : jon@tourGuide.com
+2022-12-01 08:37:59.555 DEBUG 47796 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : afbfe385-2b41-4389-98e5-ff6618409f58 ; userName : jon2 ; email : jon2@tourGuide.com
+2022-12-01 08:37:59.556 DEBUG 47796 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : 6125ab1f-364a-4063-97da-aa7f33ce96d4 ; userName : jon ; email : jon@tourGuide.com
+2022-12-01 08:37:59.557 DEBUG 47796 --- [    Test worker] tourGuide.dao.UserDAOForTesting          : addUser : ID : 3e6090a3-ac78-4ebf-8d0e-280a4e20c2b6 ; userName : jon ; email : jon@tourGuide.com
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
